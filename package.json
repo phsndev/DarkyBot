@@ -5,6 +5,8 @@
   "main": "bot.js",
   "author": "Haksio",
   "dependencies": {
-    "discord.js": "^12.5.3"
+    "@keyv/mysql": "^1.1.4",
+    "discord.js": "^12.5.3",
+    "keyv": "^4.0.3"
   }
 }
