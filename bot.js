@@ -4,7 +4,7 @@ const client = new Discord.Client()
 
 const token = 'NzQ2NTAwMTIwNjA2MTQ2NjYw.X0BOag.ZZvN5fYF3O_aeKQcYCtYm_aGgI4';
  
-//const Keyv = require('keyv');
+const Keyv = require('keyv');
 
 //const keyv = new Keyv('mysql://user:pass@localhost:3306/dbname');
 
@@ -16,10 +16,11 @@ const token = 'NzQ2NTAwMTIwNjA2MTQ2NjYw.X0BOag.ZZvN5fYF3O_aeKQcYCtYm_aGgI4';
   //console.log(`Logged in as ${client.user.tag}!`);
 //});
 
+const parties = [];
 
 client.on('message', message => {
   if (message.content === '!darky' || message.content === '!help') {
-    message.reply('\n Type !LFP-Create to set up a party;\n Type !LFP-Join to look for a party.')
+    message.reply('\n Type !LFP-Create to set up a party;\n Type !LFP-Join to look for a party. \n Type !LFP-Schedule to set up a time for a scheduled run.')
   }
   if (message.content === '!LFP-Create'){
   	let guild = message.guild;
@@ -42,10 +43,35 @@ client.on('message', message => {
 				color: color_code,
 			},
 			reason: 'partay',
-		}).then((role) => user.roles.add(role)).catch(console.error);
+		}).then((role) => user.roles.add(role)).catch(console.error).then((role) => parties.add(role));
 	} catch (error){
 		console.log(error);
 	}
+  }
+  if (message.content === '!LFP-Join'){
+  	//const role = guild.cache.some('Party');
+  	message.reply(parties);
+  }
+  if (message.content === '!LFP-Schedule'){
+    var nameRole = message.author.username + "'s Party";
+    if(message.member.roles.find(r => r.name === nameRole)){
+      message.channel.send('Schedule for ${nameRole}?').then(async (start) => {
+        message.channel.awaitMessages(filter, { maxMatches: 1, time: 60000, errors: ['time']}).then(async (collected) => {
+          if (collected.first().content === "yes" || collected.first().content === "Yes") {
+            message.channel.send("Please specify in the format '!Schedule month/day hour' in GMT.").then(async (start) => {
+              message.channel.awaitMessages(filter, { maxMatches: 1, time: 60000, errors: ['time']}).then(async (collected) => {
+                //send to database the scheduled time
+            })
+
+          } else if (collected.first().content === "no" || collected.first().content === "No") {
+
+          }
+
+        }
+      })
+    }
+    else
+      message.channel.send("'You don't seem to have a party created'");
   }
 });
 
